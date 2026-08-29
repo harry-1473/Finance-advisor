@@ -51,7 +51,20 @@ export function InputScreen({
   busy: boolean
 }) {
   const patchMonth = (i: number, key: 'sales' | 'expenses', value: number) => {
-    const months = business.months.map((m, idx) => (idx === i ? { ...m, [key]: value } : m))
+    const months = business.months.map((m, idx) => {
+      if (idx !== i) return m
+      if (key === 'expenses') {
+        // Adjust operating to balance total expenses with breakdown sum
+        const otherSum = (m.breakdown.inventory || 0) + (m.breakdown.payroll || 0) + (m.breakdown.marketing || 0)
+        const newOperating = Math.max(0, value - otherSum)
+        return {
+          ...m,
+          expenses: value,
+          breakdown: { ...m.breakdown, operating: newOperating },
+        }
+      }
+      return { ...m, [key]: value }
+    })
     setBusiness({ ...business, months })
   }
   const patchBreak = (i: number, key: keyof BusinessInput['months'][0]['breakdown'], value: number) => {
@@ -138,7 +151,7 @@ export function InputScreen({
           <h3 className="font-serif text-xl">{m.month}</h3>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Sales" value={m.sales} onChange={(n) => patchMonth(i, 'sales', n)} />
-            <Field label="Expenses" value={m.expenses} onChange={(n) => patchMonth(i, 'expenses', n)} />
+            <Field label="Total Expenses" value={m.expenses} onChange={(n) => patchMonth(i, 'expenses', n)} />
             <div className="rounded-xl border border-dashed border-rule p-3 text-sm text-ink/70">
               Profit (sales − expenses)
               <div className="font-serif text-2xl text-ink">{mmk(m.sales - m.expenses)}</div>
