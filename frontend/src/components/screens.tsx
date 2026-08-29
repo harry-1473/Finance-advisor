@@ -55,9 +55,16 @@ export function InputScreen({
     setBusiness({ ...business, months })
   }
   const patchBreak = (i: number, key: keyof BusinessInput['months'][0]['breakdown'], value: number) => {
-    const months = business.months.map((m, idx) =>
-      idx === i ? { ...m, breakdown: { ...m.breakdown, [key]: value } } : m,
-    )
+    const months = business.months.map((m, idx) => {
+      if (idx !== i) return m
+      const nextBreakdown = { ...m.breakdown, [key]: value }
+      const totalExpenses =
+        (nextBreakdown.inventory || 0) +
+        (nextBreakdown.payroll || 0) +
+        (nextBreakdown.marketing || 0) +
+        (nextBreakdown.operating || 0)
+      return { ...m, expenses: totalExpenses, breakdown: nextBreakdown }
+    })
     setBusiness({ ...business, months })
   }
 
