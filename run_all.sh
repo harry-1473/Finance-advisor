@@ -27,9 +27,9 @@ cd "$ROOT/frontend"
 npm run dev -- --host 0.0.0.0 --port 43123 &
 FRONTEND_PID=$!
 
-# 3. Start Cloudflare Tunnel for Mobile Access
-echo "--> Starting Public Cloudflare Tunnel for Phone Access..."
-cloudflared tunnel --url http://localhost:43123 &
+# 3. Start Public Tunnel for Mobile 5G/LTE Access
+echo "--> Starting Public Tunnel for 5G/LTE Phone Access..."
+npx --yes localtunnel --port 43123 --subdomain aman-copilot-yangon &
 TUNNEL_PID=$!
 
 echo ""
@@ -37,8 +37,8 @@ echo "========================================================"
 echo " 🚀 Aman Copilot is RUNNING!"
 echo "========================================================"
 echo " 💻 Local Mac URL:      http://localhost:43123"
-echo " 📱 Same Wi-Fi Phone:   http://192.168.181.132:43123"
-echo " 🌍 Mobile 5G/LTE URL:  Check cloudflared output above"
+echo " 📶 Same Wi-Fi Phone:   http://192.168.181.132:43123"
+echo " 📱 Mobile 5G/LTE URL:  https://aman-copilot-yangon.loca.lt"
 echo "========================================================"
 echo " Press Ctrl+C to stop all servers."
 
