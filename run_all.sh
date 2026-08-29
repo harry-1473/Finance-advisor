@@ -8,6 +8,10 @@ echo "=========================================="
 echo " Starting Aman Copilot Local & Mobile Tunnels"
 echo "=========================================="
 
+# 0. Clean up stale server processes on ports 8766 and 43123
+lsof -ti:8766 | xargs kill -9 2>/dev/null || true
+lsof -ti:43123 | xargs kill -9 2>/dev/null || true
+
 # 1. Start Backend FastAPI
 echo "--> Starting Backend FastAPI server on port 8766..."
 cd "$ROOT/backend"
