@@ -13,9 +13,11 @@ echo "--> Starting Backend FastAPI server on port 8766..."
 cd "$ROOT/backend"
 if [[ ! -d .venv ]]; then
   python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -q -r requirements.txt
+else
+  source .venv/bin/activate
 fi
-source .venv/bin/activate
-pip install -q -r requirements.txt
 python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8766 &
 BACKEND_PID=$!
 
