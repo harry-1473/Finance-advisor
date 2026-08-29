@@ -5,7 +5,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = ":splat"
+  to = "https://aman-copilot-yangon.loca.lt/api/:splat"
   status = 200
 
 [[redirects]]
