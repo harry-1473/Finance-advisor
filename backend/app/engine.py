@@ -370,6 +370,10 @@ def product_recommendation(products: list) -> dict | None:
 
 def analyze(business: BusinessInput) -> dict:
     months = business.months
+    for m in months:
+        b_sum = m.breakdown.inventory + m.breakdown.payroll + m.breakdown.marketing + m.breakdown.operating
+        if b_sum > 0:
+            m.expenses = b_sum
     sales = [m.sales for m in months]
     expenses = [m.expenses for m in months]
     profits = [m.sales - m.expenses for m in months]

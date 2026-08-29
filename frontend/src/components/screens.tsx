@@ -146,23 +146,36 @@ export function InputScreen({
           </p>
         </Card>
       </div>
-      {business.months.map((m, i) => (
-        <Card key={m.month} className="p-5">
-          <h3 className="font-serif text-xl">{m.month}</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <Field label="Sales" value={m.sales} onChange={(n) => patchMonth(i, 'sales', n)} />
-            <Field label="Total Expenses" value={m.expenses} onChange={(n) => patchMonth(i, 'expenses', n)} />
-            <div className="rounded-xl border border-dashed border-rule p-3 text-sm text-ink/70">
-              Profit (sales − expenses)
-              <div className="font-serif text-2xl text-ink">{mmk(m.sales - m.expenses)}</div>
+      {business.months.map((m, i) => {
+        const totalExp =
+          (m.breakdown.inventory || 0) +
+          (m.breakdown.payroll || 0) +
+          (m.breakdown.marketing || 0) +
+          (m.breakdown.operating || 0)
+        return (
+          <Card key={m.month} className="p-5">
+            <h3 className="font-serif text-xl">{m.month}</h3>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Field label="Sales (MMK)" value={m.sales} onChange={(n) => patchMonth(i, 'sales', n)} />
+              <div className="rounded-xl border border-rule bg-paper p-3 text-sm text-ink/70">
+                <span className="text-xs uppercase tracking-wider text-moss/80 font-semibold">Total Expenses</span>
+                <div className="font-serif text-2xl text-ink font-bold mt-1">{mmk(totalExp)}</div>
+                <span className="text-xs text-ink/50">Sum of 4 categories below</span>
+              </div>
+              <div className="rounded-xl border border-dashed border-rule p-3 text-sm text-ink/70">
+                <span className="text-xs uppercase tracking-wider text-ink/60 font-semibold">Profit (Sales − Expenses)</span>
+                <div className={`font-serif text-2xl font-bold mt-1 ${m.sales - totalExp >= 0 ? 'text-moss' : 'text-red-700'}`}>
+                  {mmk(m.sales - totalExp)}
+                </div>
+              </div>
+              <Field label="Inventory (MMK)" value={m.breakdown.inventory} onChange={(n) => patchBreak(i, 'inventory', n)} />
+              <Field label="Payroll (MMK)" value={m.breakdown.payroll} onChange={(n) => patchBreak(i, 'payroll', n)} />
+              <Field label="Marketing (MMK)" value={m.breakdown.marketing} onChange={(n) => patchBreak(i, 'marketing', n)} />
+              <Field label="Operating (MMK)" value={m.breakdown.operating} onChange={(n) => patchBreak(i, 'operating', n)} />
             </div>
-            <Field label="Inventory" value={m.breakdown.inventory} onChange={(n) => patchBreak(i, 'inventory', n)} />
-            <Field label="Payroll" value={m.breakdown.payroll} onChange={(n) => patchBreak(i, 'payroll', n)} />
-            <Field label="Marketing" value={m.breakdown.marketing} onChange={(n) => patchBreak(i, 'marketing', n)} />
-            <Field label="Operating" value={m.breakdown.operating} onChange={(n) => patchBreak(i, 'operating', n)} />
-          </div>
-        </Card>
-      ))}
+          </Card>
+        )
+      })}
       <button
         type="button"
         onClick={onAnalyze}
